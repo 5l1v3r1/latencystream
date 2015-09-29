@@ -13,7 +13,7 @@ func BufferReader(r io.Reader) <-chan []byte {
 	output := make(chan []byte)
 	go func() {
 		defer close(output)
-		rawInput := NewByteSliceChanReader(r)
+		rawInput, _ := NewByteSliceChanReader(r)
 		buffer := &DataBufferer{MaxBuffer: MaxBuffer, MaxLatency: MaxLatency, Input: rawInput,
 			Output: output}
 		buffer.Run()
