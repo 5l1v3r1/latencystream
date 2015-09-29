@@ -1,4 +1,4 @@
-package main
+package latencyreader
 
 import (
 	"io"
@@ -7,38 +7,18 @@ import (
 
 const MaxLatency = time.Second / 2
 const MaxBuffer = 1 << 20
-const ReadBufferSize = 1 << 16
 
 // BufferReader turns an io.Reader into a channel of buffered data chunks.
 func BufferReader(r io.Reader) <-chan []byte {
 	output := make(chan []byte)
 	go func() {
 		defer close(output)
-		rawInput := UnbufferedChannelForReader(r)
+		rawInput := NewByteSliceChanReader(r)
 		buffer := &DataBufferer{MaxBuffer: MaxBuffer, MaxLatency: MaxLatency, Input: rawInput,
 			Output: output}
 		buffer.Run()
 	}()
 	return output
-}
-
-// UnbufferedChannelForReader turns an io.Reader into a channel of byte buffers.
-// The returned channel will be closed when the reader reaches EOF or encounters an error.
-func UnbufferedChannelForReader(r io.Reader) <-chan []byte {
-	rawInput := make(chan []byte)
-	go func() {
-		for {
-			buffer := make([]byte, ReadBufferSize)
-			count, err := r.Read(buffer)
-			if count > 0 {
-				rawInput <- buffer[:count]
-			} else if err != nil {
-				break
-			}
-		}
-		close(rawInput)
-	}()
-	return rawInput
 }
 
 type DataBufferer struct {
