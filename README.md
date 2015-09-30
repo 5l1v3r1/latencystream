@@ -1,6 +1,6 @@
 # Abstract
 
-The **latencyreader** package makes it possible to read fixed-sized chunks from an `io.Reader` while staying below a maximum latency.
+The **latencystream** package makes it possible to read fixed-sized chunks from an `io.Reader` while staying below a maximum latency.
 
 ## Example use case
 

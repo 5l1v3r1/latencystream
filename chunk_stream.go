@@ -1,4 +1,4 @@
-package latencyreader
+package latencystream
 
 import "io"
 
