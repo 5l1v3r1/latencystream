@@ -47,7 +47,7 @@ func (b *dataBuffer) outputChunkStream() ChunkStream {
 
 func (b *dataBuffer) runLoop() {
 	defer close(b.output)
-	b.resetTimeout()
+	b.setUnlimitedTimeout()
 	for {
 		select {
 		case <-b.closer:
